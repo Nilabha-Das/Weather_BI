@@ -143,9 +143,10 @@ SWITCH(
 
 ---
 
-## 📸 Example Preview (Optional)
+## 📸 Example Preview 
 
-Add screenshots here showing your dashboard layout and visual elements.
+<img width="1319" height="739" alt="Screenshot 2025-07-24 110348" src="https://github.com/user-attachments/assets/44e5b274-4173-4485-ba03-97df478e7ee5" />
+
 
 ---
 
