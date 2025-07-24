@@ -1,132 +1,158 @@
-How to Develop a Power BI Dashboard with WeatherAPI
-Posted onJune 21, 2025 June 21, 2025.by thedeveloper.yt@gmail.com.Posted inBlogs, Power BI. No comments yet
-Power BI is a fantastic tool for visualizing data — and you can easily integrate live weather data into your reports too. In this blog, we’ll walk you through the process of building a real-time weather dashboard powered by WeatherAPI, and then we’ll add some Air Quality Index (AQI) indicators for a richer dashboard experience.
+# 🌦️ Power BI Real-Time Weather Dashboard using WeatherAPI
 
-🎯 Why WeatherAPI?
-WeatherAPI.com is a simple and powerful service that returns live, historical, and forecast weather data — perfect for Power BI. The data is available in JSON format, making it easy to process and transform.
+Create a real-time, dynamic weather dashboard in **Power BI** using **WeatherAPI** — complete with live temperature, humidity, wind data, and **Air Quality Index (AQI)** indicators.
 
-🛠️ Prerequisites
-✅ A free or paid account on WeatherAPI.com
+---
 
-✅ Power BI Desktop installed
+## 📌 Features
 
-✅ Basic Power BI data model knowledge
+* 🔄 Real-time weather data using WeatherAPI
+* 📍 Location-based filtering for cities
+* 🌡️ Weather indicators: temperature, humidity, wind speed, etc.
+* 🧪 Air Quality Index (AQI) color codes, statuses & suggestions
+* 🌐 Map visuals and dynamic user interactivity
 
-🔑 Step 1: Get Your WeatherAPI Key
-Sign up at WeatherAPI.com, then copy your API key.
+---
 
-You’ll use this key to authenticate API calls.
+## 🛠️ Prerequisites
 
-🌐 Step 2: Build the API URL
-For current weather data, use:
+Before you begin, make sure you have:
 
-bash
+* ✅ A [WeatherAPI.com](https://www.weatherapi.com/) account (Free or Paid)
+* ✅ Installed **Power BI Desktop**
+* ✅ Basic knowledge of Power BI (data loading, visuals, DAX)
 
+---
+
+## 🔑 Step 1: Get Your API Key
+
+1. Sign up at [WeatherAPI.com](https://www.weatherapi.com/).
+2. Go to your profile and **copy your API key**.
+
+---
+
+## 🌐 Step 2: Build the API URL
+
+Use the following URL to fetch **current weather data**:
+
+```bash
 https://api.weatherapi.com/v1/current.json?key=YOUR_API_KEY&q=CITY_NAME
+```
 
-🧠 Step 3: Connect Power BI to WeatherAPI
-Open Power BI Desktop.
+Replace:
 
-Click Get Data → Web.
+* `YOUR_API_KEY` with your actual API key
+* `CITY_NAME` with the location (e.g., London, New York)
 
-Enter your WeatherAPI URL.
+---
 
-Click OK.
+## 🔗 Step 3: Connect Power BI to WeatherAPI
 
-🧹 Step 4: Transform the Data
-Power BI will show a preview in the Power Query Editor:
+1. Open **Power BI Desktop**
+2. Go to **Home > Get Data > Web**
+3. Paste the WeatherAPI URL
+4. Click **OK**
 
-Expand the current record.
+---
 
-Expand sub-records like condition or air_quality.
+## 🔄 Step 4: Transform JSON Data in Power Query
 
-Rename columns for clarity.
+1. Expand the `current` record
+2. Expand sub-records like `condition`, `air_quality`
+3. Rename columns for clarity
+4. Click **Close & Apply**
 
-Click Close & Apply.
+---
 
-📊 Step 5: Build Your Dashboard
-Add:
+## 📊 Step 5: Design the Weather Dashboard
 
-✅ Cards for temperature, humidity, etc.
+Use visuals like:
 
-✅ Gauges for wind speed.
+* ✅ **Cards** – Temperature, humidity, condition text
+* ✅ **Gauges** – Wind speed, pressure
+* ✅ **Line/Bar Charts** – Hourly/daily trends
+* ✅ **Map Visual** – Plot city locations
+* ✅ **Slicers** – Filter data by city
 
-✅ Charts for daily variations.
+---
 
-And you can also set up filters/slicers for different cities.
+## 🎨 Step 6: Add AQI Indicators using DAX
 
-🎨 Step 6: Styling & Interactivity
-Insert icons representing the current weather.
+WeatherAPI provides AQI data in the `current.air_quality` object. You can create dynamic indicators using DAX.
 
-Plot the map visual with city locations.
+### ✅ AQI Color Template
 
-Allow your users to select cities dynamically.
-
-⚡ Step 7: Adding AQI Indicators with Reusable Measures
-You can easily incorporate Air Quality Index (AQI) data into your report using the current.air_quality part of the WeatherAPI response.
-
-Here’s a quick Power BI DAX pattern you can copy-paste and adapt to your needs:
-
-🎨 Generic Template for AQI Color:
-DAX
-
-AQI Color TEMPLATE =
-VAR AQI = ROUND(SELECTEDVALUE('Current'[current.air_quality.COLUMN_NAME]),0)
+```DAX
+AQI Color =
+VAR AQI = ROUND(SELECTEDVALUE('Current'[current.air_quality.COLUMN_NAME]), 0)
 RETURN
 SWITCH(
-TRUE(),
-AQI <= 50, "#43d946",
-AQI <= 100, "#fff570",
-AQI <= 150, "#ff9800",
-AQI <= 200, "#d99343",
-AQI <= 300, "#ff5b0f",
-"#d95243"
+    TRUE(),
+    AQI <= 50, "#43d946",
+    AQI <= 100, "#fff570",
+    AQI <= 150, "#ff9800",
+    AQI <= 200, "#d99343",
+    AQI <= 300, "#ff5b0f",
+    "#d95243"
 )
+```
 
-💡 Simply copy this measure and replace COLUMN_NAME with the air quality column you want to check — for example:
+### ✅ AQI Suggestion Template
 
-pm2_5
-
-co
-
-no2
-
-🎨 Generic Template for AQI Suggestion:
-DAX
-AQI Suggestion TEMPLATE =
-VAR AQI = ROUND(SELECTEDVALUE('Current'[current.air_quality.COLUMN_NAME]),0)
+```DAX
+AQI Suggestion =
+VAR AQI = ROUND(SELECTEDVALUE('Current'[current.air_quality.COLUMN_NAME]), 0)
 RETURN
 SWITCH(
-TRUE(),
-AQI <= 50, "Air is clean and healthy",
-AQI <= 100, "Acceptable air quality, stay active",
-AQI <= 150, "Sensitive groups should reduce outdoor time",
-AQI <= 200, "Limit prolonged outdoor exertion",
-AQI <= 300, "Avoid outdoor activity if possible",
-"Stay indoors, wear a mask if outside"
+    TRUE(),
+    AQI <= 50, "Air is clean and healthy",
+    AQI <= 100, "Acceptable air quality, stay active",
+    AQI <= 150, "Sensitive groups should reduce outdoor time",
+    AQI <= 200, "Limit prolonged outdoor exertion",
+    AQI <= 300, "Avoid outdoor activity if possible",
+    "Stay indoors, wear a mask if outside"
 )
+```
 
-🎨 Generic Template for AQI Status:
-DAX
-AQI Status TEMPLATE =
-VAR AQI = ROUND(SELECTEDVALUE('Current'[current.air_quality.COLUMN_NAME]),0)
+### ✅ AQI Status Template
+
+```DAX
+AQI Status =
+VAR AQI = ROUND(SELECTEDVALUE('Current'[current.air_quality.COLUMN_NAME]), 0)
 RETURN
 SWITCH(
-TRUE(),
-AQI <= 50, "Good",
-AQI <= 100, "Moderate",
-AQI <= 150, "Unhealthy for Sensitive",
-AQI <= 200, "Unhealthy",
-AQI <= 300, "Very Unhealthy",
-"Hazardous"
+    TRUE(),
+    AQI <= 50, "Good",
+    AQI <= 100, "Moderate",
+    AQI <= 150, "Unhealthy for Sensitive",
+    AQI <= 200, "Unhealthy",
+    AQI <= 300, "Very Unhealthy",
+    "Hazardous"
 )
+```
 
-✅ Again, just replace COLUMN_NAME with the pollutant of interest.
+> 🔁 Replace `COLUMN_NAME` with your pollutant of interest: `pm2_5`, `no2`, `co`, `o3`, etc.
 
-💡 Quick Tip:
-Keep these generic DAX measures as templates — so when you want to add AQI visualizations for new pollutants like so2, no2, or o3, you only need to copy-paste and tweak one column name.
+---
 
-🎉 Conclusion
-By integrating WeatherAPI into Power BI, you can create a dynamic weather dashboard with live data, then enrich it with custom AQI visualizations — all in a few easy steps. With these reusable DAX measures, your dashboard stays scalable, maintainable, and easy to enhance as your requirements grow.
+## 💡 Tips
 
-Happy dashboarding! 🎨
+* Keep DAX templates reusable for different pollutants
+* Use conditional formatting for color-coded visuals
+* Create bookmarks to switch between cities or pollutant views
+
+---
+
+## 📸 Example Preview (Optional)
+
+Add screenshots here showing your dashboard layout and visual elements.
+
+---
+
+## 🎉 Conclusion
+
+Integrating **WeatherAPI** with **Power BI** helps you build smart, responsive dashboards with real-time weather and air quality insights. These DAX patterns make it easy to scale and personalize your reports.
+
+Happy Dashboarding! 🌦️📊
+
+
